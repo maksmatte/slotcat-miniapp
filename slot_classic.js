@@ -6,7 +6,7 @@ if (tg) {
   document.getElementById("user").innerText =
     user ? `Игрок: ${user.first_name}` : "Игрок";
 } else {
-  document.getElementById("user").innerText = "Игрок (не Telegram)";
+  document.getElementById("user").innerText = "Игрок Тест";
 }
 
 // Баланс
@@ -43,3 +43,4 @@ document.getElementById("play").onclick = () => {
   localStorage.setItem("balance", balance);
   balanceEl.innerText = balance;
 };
+
