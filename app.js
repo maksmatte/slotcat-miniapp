@@ -11,18 +11,18 @@ const gameContainer = document.getElementById("gameContainer");
 const playBtn = document.getElementById("playBtn");
 const backBtn = document.getElementById("backBtn");
 
-// Показываем профиль игрока
+// Показываем профиль игрока в меню
 const menuProfile = document.createElement("div");
 menuProfile.id = "menuProfile";
 menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
 menu.insertBefore(menuProfile, menu.firstChild);
 
-// Обновление баланса в меню
+// Функция обновления баланса в меню
 function updateMenuBalance() {
   document.getElementById("menuBalance").innerText = balance;
 }
 
-// Play
+// ---------- Play ----------
 playBtn.addEventListener("click", () => {
   menu.style.display = "none";
   gameContainer.style.display = "block";
@@ -31,19 +31,20 @@ playBtn.addEventListener("click", () => {
   window.SLOT_PLAYER_NAME = playerName;
   window.SLOT_BALANCE = balance;
 
-  // Подключаем слот
+  // Подключаем слот динамически
   const oldScript = document.getElementById("slotScript");
   if (oldScript) oldScript.remove();
+
   const script = document.createElement("script");
   script.src = "slot_classic.js";
   script.id = "slotScript";
   document.body.appendChild(script);
 
-  // Обновляем баланс в слоте сразу
-  document.getElementById("balance").innerText = balance;
+  // Баланс сразу обновляем в слоте
+  document.getElementById("balance").innerText = window.SLOT_BALANCE;
 });
 
-// Назад
+// ---------- Назад ----------
 backBtn.addEventListener("click", () => {
   gameContainer.style.display = "none";
   menu.style.display = "flex";
@@ -51,5 +52,7 @@ backBtn.addEventListener("click", () => {
   const oldScript = document.getElementById("slotScript");
   if (oldScript) oldScript.remove();
 
+  // Обновляем глобальный баланс из слота
+  balance = window.SLOT_BALANCE;
   updateMenuBalance();
 });
