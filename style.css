@@ -1,33 +1,45 @@
-﻿body {
-    margin: 0;
-    background: #0f172a;
-    color: white;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #fff3e0;
+  margin: 0;
+  padding: 0;
 }
 
-#app {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    text-align: center;
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  height: 100vh;
 }
 
-button {
-    padding: 12px;
-    width: 100%;
-    font-size: 18px;
-    margin: 10px 0;
-    border-radius: 10px;
-    border: none;
-    background: #22c55e;
-    cursor: pointer;
+.menu button {
+  padding: 15px 25px;
+  font-size: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #ffcc80;
+  border: none;
+  transition: transform 0.1s;
 }
 
-#slot {
-    font-size: 40px;
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
+.menu button:active {
+  transform: scale(0.95);
+}
+
+#balanceDisplay {
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+#backBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #ffe0b2;
+  border: none;
 }
