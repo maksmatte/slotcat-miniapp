@@ -1,13 +1,18 @@
+// Берем глобальные данные
 const playerName = window.SLOT_PLAYER_NAME || "Игрок Тест";
 let balance = window.SLOT_BALANCE || 100;
 
+// Имя игрока в слоте
+document.getElementById("user").innerText = `Игрок: ${playerName}`;
 const balanceEl = document.getElementById("balance");
 balanceEl.innerText = balance;
 
-document.getElementById("user").innerText = `Игрок: ${playerName}`;
-
+// Слот
+const symbols = ["🍒","🍒","🍒","🍋","🍋","🔔","⭐","7️⃣"];
 const slotEls = document.querySelectorAll("#slot span");
-document.getElementById("play").onclick = () => {
+const playBtn = document.getElementById("play");
+
+playBtn.onclick = () => {
   if (balance <= 0) {
     alert("Нет фишек 😢");
     return;
@@ -15,9 +20,7 @@ document.getElementById("play").onclick = () => {
 
   balance -= 1;
 
-  const symbols = ["🍒","🍒","🍒","🍋","🍋","🔔","⭐","7️⃣"];
   const result = [];
-
   slotEls.forEach(el => {
     const sym = symbols[Math.floor(Math.random() * symbols.length)];
     el.innerText = sym;
@@ -31,9 +34,9 @@ document.getElementById("play").onclick = () => {
     else alert("🎉 Победа! +10 фишек");
   }
 
-  localStorage.setItem("balance", balance);
   balanceEl.innerText = balance;
+  localStorage.setItem("balance", balance);
 
-  // Обновляем глобальный баланс для меню и будущих слотов
+  // Обновляем глобальный баланс для меню и других слотов
   window.SLOT_BALANCE = balance;
 };
