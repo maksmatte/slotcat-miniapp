@@ -1,26 +1,28 @@
-// Берем глобальные данные
-const playerName = window.SLOT_PLAYER_NAME || "Игрок Тест";
-let balance = window.SLOT_BALANCE || 100;
+// Получаем глобальные данные
+const playerName = window.SLOT_PLAYER_NAME;
+let balance = window.SLOT_BALANCE;
 
-// Имя игрока в слоте
-document.getElementById("user").innerText = `Игрок: ${playerName}`;
 const balanceEl = document.getElementById("balance");
 balanceEl.innerText = balance;
 
-// Слот
-const symbols = ["🍒","🍒","🍒","🍋","🍋","🔔","⭐","7️⃣"];
-const slotEls = document.querySelectorAll("#slot span");
-const playBtn = document.getElementById("play");
+document.getElementById("user").innerText = `Игрок: ${playerName}`;
 
-playBtn.onclick = () => {
-  if (balance <= 0) {
+// Инициализация слотов после того, как слот виден
+const slotEls = document.querySelectorAll("#slot span");
+
+document.getElementById("play").onclick = () => {
+  if (window.SLOT_BALANCE <= 0) {
     alert("Нет фишек 😢");
     return;
   }
 
-  balance -= 1;
+  // Используем глобальный баланс
+  window.SLOT_BALANCE -= 1;
+  balance = window.SLOT_BALANCE;
 
+  const symbols = ["🍒","🍒","🍒","🍋","🍋","🔔","⭐","7️⃣"];
   const result = [];
+
   slotEls.forEach(el => {
     const sym = symbols[Math.floor(Math.random() * symbols.length)];
     el.innerText = sym;
@@ -28,15 +30,15 @@ playBtn.onclick = () => {
   });
 
   if (result.every(s => s === result[0])) {
-    balance += 10;
+    window.SLOT_BALANCE += 10;
+    balance = window.SLOT_BALANCE;
+
     const tg = window.Telegram?.WebApp;
     if (tg) tg.showPopup({ message: "🎉 Победа! +10 фишек" });
     else alert("🎉 Победа! +10 фишек");
   }
 
-  balanceEl.innerText = balance;
+  // Сохраняем и обновляем
   localStorage.setItem("balance", balance);
-
-  // Обновляем глобальный баланс для меню и других слотов
-  window.SLOT_BALANCE = balance;
+  balanceEl.innerText = balance;
 };
