@@ -1,96 +1,110 @@
+// ---------- Глобальные данные ----------
 const tg = window.Telegram?.WebApp;
 tg?.expand();
 
 const playerName = tg?.initDataUnsafe?.user?.first_name || "Игрок Тест";
 let balance = Number(localStorage.getItem("balance")) || 100;
 
-// Показываем профиль игрока
+// ---------- Элементы ----------
 const menu = document.getElementById("menu");
-const menuProfile = document.createElement("div");
-menuProfile.id = "menuProfile";
-menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
-menu.insertBefore(menuProfile, menu.firstChild);
-
-// Элементы
 const gameContainer = document.getElementById("gameContainer");
-const playBtnMenu = document.getElementById("playBtn");
+const playClassic = document.getElementById("playClassic");
+const playDogHunt = document.getElementById("playDogHunt");
+const balanceBtn = document.getElementById("balanceBtn");
+const soonBtn = document.getElementById("soonBtn");
 const backBtn = document.getElementById("backBtn");
+const slotContainer = document.getElementById("slot");
+const playBtn = document.getElementById("play");
+const balanceEl = document.getElementById("balance");
+const userEl = document.getElementById("user");
 
-playBtnMenu.addEventListener("click", () => {
-  menu.style.display = "none";
-  gameContainer.style.display = "block";
-  initDogHuntSlot();
-});
+// Показываем профиль
+userEl.innerText = `Игрок: ${playerName}`;
+balanceEl.innerText = balance;
 
-backBtn.addEventListener("click", () => {
-  gameContainer.style.display = "none";
-  menu.style.display = "flex";
-  updateMenuBalance();
-});
+// ---------- Функции слотов ----------
+function initClassicSlot() {
+    slotContainer.innerHTML = `<span>❓</span><span>❓</span><span>❓</span>`;
+    const symbols = ["🍒","🍋","🔔","⭐","7️⃣"];
+    const slotEls = slotContainer.querySelectorAll("span");
 
-function updateMenuBalance() {
-  document.getElementById("menuBalance").innerText = balance;
+    playBtn.onclick = () => {
+        if (balance <= 0) return alert("Нет фишек 😢");
+        balance -= 1;
+
+        const result = [];
+        slotEls.forEach(el => {
+            const sym = symbols[Math.floor(Math.random() * symbols.length)];
+            el.innerText = sym;
+            result.push(sym);
+        });
+
+        if (result.every(s => s === result[0])) {
+            balance += 10;
+            tg?.showPopup({message:"🎉 Победа! +10 фишек"});
+        }
+
+        balanceEl.innerText = balance;
+        localStorage.setItem("balance", balance);
+    };
 }
 
-// ---------------- DogHunt слот ----------------
 function initDogHuntSlot() {
-  const slotContainer = document.getElementById("slot");
-  slotContainer.innerHTML = "";
-
-  // Массив картинок собак (пока с тестовыми URL)
-  const dogs = [
-    "https://i.imgur.com/1.png",
-    "https://i.imgur.com/2.png",
-    "https://i.imgur.com/3.png",
-    "https://i.imgur.com/4.png",
-    "https://i.imgur.com/5.png"
-  ];
-
-  for (let i = 0; i < 5; i++) {
-    const img = document.createElement("img");
-    img.src = dogs[Math.floor(Math.random() * dogs.length)];
-    img.className = "slot-dog";
-    slotContainer.appendChild(img);
-  }
-
-  // Кнопка крутить
-  const playBtnSlot = document.getElementById("play");
-  playBtnSlot.onclick = () => {
-    if (balance <= 0) {
-      alert("Нет фишек 😢");
-      return;
+    // 5 слотов
+    slotContainer.innerHTML = "";
+    const dogImgs = [
+        "dog1.png","dog2.png","dog3.png","dog4.png","dog5.png"
+    ];
+    const slotEls = [];
+    for (let i=0;i<5;i++){
+        const img = document.createElement("img");
+        img.src = dogImgs[i]; // заменим на реальные ссылки
+        img.style.width="80px";
+        img.style.height="80px";
+        img.style.margin="5px";
+        slotContainer.appendChild(img);
+        slotEls.push(img);
     }
 
-    balance -= 1;
-    const slotImgs = document.querySelectorAll(".slot-dog");
-    const result = [];
+    playBtn.onclick = () => {
+        if (balance <= 0) return alert("Нет фишек 😢");
+        balance -= 1;
 
-    slotImgs.forEach(img => img.classList.add("spin"));
+        const result = [];
+        slotEls.forEach(el=>{
+            const randDog = dogImgs[Math.floor(Math.random()*dogImgs.length)];
+            el.src = randDog;
+            result.push(randDog);
+        });
 
-    setTimeout(() => {
-      slotImgs.forEach(img => {
-        const dog = dogs[Math.floor(Math.random() * dogs.length)];
-        img.src = dog;
-        result.push(dog);
-        img.classList.remove("spin");
-      });
+        // Выигрыш: все 5 одинаковые
+        if (result.every(s=>s===result[0])){
+            balance += 20;
+            tg?.showPopup({message:"🐶 Победа! +20 фишек"});
+        }
 
-      // Выигрыш: если все одинаковые
-      if (result.every(d => d === result[0])) {
-        balance += 50;
-        if (tg) tg.showPopup({ message: "🎉 Jackpot! +50 фишек" });
-        else alert("🎉 Jackpot! +50 фишек");
-      }
-
-      updateSlotBalance();
-    }, 800);
-  };
-
-  updateSlotBalance();
+        balanceEl.innerText = balance;
+        localStorage.setItem("balance", balance);
+    };
 }
 
-function updateSlotBalance() {
-  document.getElementById("balance").innerText = balance;
-  window.SLOT_BALANCE = balance;
-  updateMenuBalance();
-}
+// ---------- Меню ----------
+playClassic.addEventListener("click", () => {
+    menu.style.display = "none";
+    gameContainer.style.display = "block";
+    initClassicSlot();
+});
+
+playDogHunt.addEventListener("click", () => {
+    menu.style.display = "none";
+    gameContainer.style.display = "block";
+    initDogHuntSlot();
+});
+
+balanceBtn.addEventListener("click", ()=>alert(`Ваш баланс: ${balance} 🐱`));
+soonBtn.addEventListener("click", ()=>alert("Эта функция появится позже! ⏳"));
+
+backBtn.addEventListener("click", ()=>{
+    gameContainer.style.display="none";
+    menu.style.display="flex";
+});
