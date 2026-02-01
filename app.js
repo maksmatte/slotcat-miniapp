@@ -1,59 +1,69 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const menu = document.getElementById("menu");
-  const gameContainer = document.getElementById("gameContainer");
-  const playBtn = document.getElementById("playBtn");
-  const balanceBtn = document.getElementById("balanceBtn");
-  const soonBtn = document.getElementById("soonBtn");
-  const backBtn = document.getElementById("backBtn");
+// ---------- Инициализация профиля ----------
+const tg = window.Telegram?.WebApp;
+tg?.expand();
 
-  let balance = Number(localStorage.getItem("balance")) || 100;
+const user = tg?.initDataUnsafe?.user;
+const playerName = user ? user.first_name : "Игрок Тест";
 
-  // ---------- Кнопка Play ----------
-  playBtn.addEventListener("click", () => {
-    menu.style.display = "none";
-    gameContainer.style.display = "block";
+// Баланс (храним глобально)
+let balance = Number(localStorage.getItem("balance")) || 100;
 
-    // --- Telegram WebApp ---
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // разворачиваем на весь экран
+// ---------- Главный экран ----------
+const menu = document.getElementById("menu");
+const gameContainer = document.getElementById("gameContainer");
+const playBtn = document.getElementById("playBtn");
+const balanceBtn = document.getElementById("balanceBtn");
+const soonBtn = document.getElementById("soonBtn");
+const backBtn = document.getElementById("backBtn");
 
-    const user = tg.initDataUnsafe.user; // получаем имя игрока
-    document.getElementById("user").innerText =
-      user ? `Игрок: ${user.first_name}` : "Игрок";
+// Показываем имя и баланс в меню
+const menuProfile = document.createElement("div");
+menuProfile.id = "menuProfile";
+menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
+menu.insertBefore(menuProfile, menu.firstChild);
 
-    // Подключаем слот динамически
-    const oldScript = document.getElementById("slotScript");
-    if (oldScript) oldScript.remove(); // удаляем старый скрипт если был
-    const script = document.createElement("script");
-    script.src = "slot_classic.js"; // твой слот
-    script.id = "slotScript";
-    document.body.appendChild(script);
+// ---------- Обновление баланса в меню ----------
+function updateMenuBalance() {
+  document.getElementById("menuBalance").innerText = balance;
+}
 
-    // Отображаем баланс
-    document.getElementById("balance").innerText = balance;
-  });
+// ---------- Кнопка Play ----------
+playBtn.addEventListener("click", () => {
+  menu.style.display = "none";
+  gameContainer.style.display = "block";
 
-  // ---------- Кнопка Баланс ----------
-  balanceBtn.addEventListener("click", () => {
-    alert(`Ваш баланс: ${balance} 🐱`);
-  });
+  // Передаем данные слоту через глобальные переменные
+  window.SLOT_PLAYER_NAME = playerName;
+  window.SLOT_BALANCE = balance;
 
-  // ---------- Кнопка Скоро ----------
-  soonBtn.addEventListener("click", () => {
-    alert("Эта функция появится позже! ⏳");
-  });
+  // Динамически загружаем слот
+  const oldScript = document.getElementById("slotScript");
+  if (oldScript) oldScript.remove();
+  const script = document.createElement("script");
+  script.src = "slot_classic.js"; // будущие слоты тоже могут использовать playerName и balance
+  script.id = "slotScript";
+  document.body.appendChild(script);
+});
 
-  // ---------- Кнопка Назад ----------
-  backBtn.addEventListener("click", () => {
-    gameContainer.style.display = "none";
-    menu.style.display = "flex";
+// ---------- Кнопка Баланс ----------
+balanceBtn.addEventListener("click", () => {
+  alert(`Ваш баланс: ${balance} 🐱`);
+});
 
-    // Удаляем слот
-    const oldScript = document.getElementById("slotScript");
-    if (oldScript) oldScript.remove();
+// ---------- Кнопка Скоро ----------
+soonBtn.addEventListener("click", () => {
+  alert("Эта функция появится позже! ⏳");
+});
 
-    // Очищаем контейнер слота
-    const slotContainer = document.getElementById("slot");
-    slotContainer.innerHTML = '<span>❓</span><span>❓</span><span>❓</span>';
-  });
+// ---------- Кнопка Назад ----------
+backBtn.addEventListener("click", () => {
+  gameContainer.style.display = "none";
+  menu.style.display = "flex";
+
+  // Удаляем слот
+  const oldScript = document.getElementById("slotScript");
+  if (oldScript) oldScript.remove();
+
+  // Обновляем меню баланс после игры
+  updateMenuBalance();
 });
