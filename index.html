@@ -12,7 +12,7 @@
   <div class="menu" id="menu">
     <h1>🐱 SlotCat</h1>
     <button id="playClassic">🎮 Classic Slot</button>
-    <button id="playBonus">🎰 Bonus Slot</button>
+    <button id="playDogHunt">🐶 DogHunt Slot</button>
     <button id="balanceBtn">💰 Balance</button>
     <button id="soonBtn">⏳ Soon</button>
   </div>
@@ -21,12 +21,8 @@
   <div id="gameContainer" style="display:none;">
     <div id="user">Игрок</div>
 
-    <!-- Слот -->
-    <div id="slot">
-      <span>❓</span>
-      <span>❓</span>
-      <span>❓</span>
-    </div>
+    <!-- Слот будет динамически создаваться сюда -->
+    <div id="slot"></div>
 
     <!-- Кнопка крутить -->
     <button id="play">Крутить 🎰</button>
@@ -41,7 +37,5 @@
   </div>
 
   <script src="app.js"></script>
-  <script src="slot_classic.js"></script>
-  <script src="slot_bonus.js"></script>
 </body>
 </html>
