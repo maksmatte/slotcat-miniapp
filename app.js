@@ -1,42 +1,30 @@
-// ---------- Глобальные данные ----------
+// ---------- Глобальные данные игрока ----------
 const tg = window.Telegram?.WebApp;
 tg?.expand();
 
 const playerName = tg?.initDataUnsafe?.user?.first_name || "Игрок Тест";
 let balance = Number(localStorage.getItem("balance")) || 100;
 
-// Главное меню
+// ---------- Элементы ----------
 const menu = document.getElementById("menu");
 const gameContainer = document.getElementById("gameContainer");
-const playClassicBtn = document.getElementById("playClassic");
-const playDoghuntBtn = document.getElementById("playDoghunt");
+const playBtnClassic = document.getElementById("playClassic");
+const playBtnDogHunt = document.getElementById("playDogHunt");
 const balanceBtn = document.getElementById("balanceBtn");
 const soonBtn = document.getElementById("soonBtn");
 const backBtn = document.getElementById("backBtn");
 
-// Профиль в меню
+// ---------- Профиль в меню ----------
 const menuProfile = document.getElementById("menuProfile");
-function updateMenuProfile() {
-  menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
-}
-updateMenuProfile();
+menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
 
-// ---------- Функции ----------
-function loadSlot(slotFile) {
-  const oldScript = document.getElementById("slotScript");
-  if (oldScript) oldScript.remove();
-
-  const script = document.createElement("script");
-  script.src = slotFile;
-  script.id = "slotScript";
-  document.body.appendChild(script);
-
-  // Показываем баланс в слоте
-  document.getElementById("balance").innerText = balance;
+// Обновление баланса
+function updateMenuBalance() {
+  document.getElementById("menuBalance").innerText = balance;
 }
 
-// ---------- Кнопки меню ----------
-playClassicBtn.addEventListener("click", () => {
+// ---------- Функция запуска слота ----------
+function startSlot(slotScriptName) {
   menu.style.display = "none";
   gameContainer.style.display = "block";
 
@@ -44,34 +32,37 @@ playClassicBtn.addEventListener("click", () => {
   window.SLOT_PLAYER_NAME = playerName;
   window.SLOT_BALANCE = balance;
 
-  loadSlot("slot_classic.js");
-});
+  // Удаляем старый слот если есть
+  const oldScript = document.getElementById("slotScript");
+  if (oldScript) oldScript.remove();
 
-playDoghuntBtn.addEventListener("click", () => {
-  menu.style.display = "none";
-  gameContainer.style.display = "block";
+  const script = document.createElement("script");
+  script.src = slotScriptName;
+  script.id = "slotScript";
+  document.body.appendChild(script);
 
-  window.SLOT_PLAYER_NAME = playerName;
-  window.SLOT_BALANCE = balance;
+  // Обновляем баланс сразу
+  document.getElementById("balance").innerText = balance;
+}
 
-  loadSlot("slot_doghunt.js");
-});
+// ---------- Слушатели кнопок ----------
+playBtnClassic.addEventListener("click", () => startSlot("slot_classic.js"));
+playBtnDogHunt.addEventListener("click", () => startSlot("slot_doghunt.js"));
 
-balanceBtn.addEventListener("click", () => {
-  alert(`Ваш баланс: ${balance} 🐱`);
-});
-
-soonBtn.addEventListener("click", () => {
-  alert("Эта функция появится позже! ⏳");
-});
+balanceBtn.addEventListener("click", () => alert(`Ваш баланс: ${balance} 🐱`));
+soonBtn.addEventListener("click", () => alert("Эта функция появится позже! ⏳"));
 
 backBtn.addEventListener("click", () => {
   gameContainer.style.display = "none";
   menu.style.display = "flex";
 
+  // Удаляем слот
   const oldScript = document.getElementById("slotScript");
   if (oldScript) oldScript.remove();
 
-  // Обновляем профиль и баланс
-  updateMenuProfile();
+  // Сброс слота на дефолт
+  const slotContainer = document.getElementById("slot");
+  slotContainer.innerHTML = '<span>❓</span><span>❓</span><span>❓</span>';
+
+  updateMenuBalance();
 });
