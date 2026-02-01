@@ -18,21 +18,28 @@
 
   <!-- Контейнер слота -->
   <div id="gameContainer" style="display:none;">
-    <!-- Твой текущий слот -->
+    <div id="user">Игрок</div>
+
+    <!-- Слот -->
     <div id="slot">
-      <!-- Тут остаётся вся твоя разметка слота -->
+      <span>❓</span>
+      <span>❓</span>
+      <span>❓</span>
     </div>
+
+    <!-- Кнопка крутить -->
+    <button id="play">Крутить 🎰</button>
 
     <!-- Баланс внизу -->
     <div id="balanceDisplay">
-      Баланс: <span id="balanceValue">0</span> 🐱
+      Баланс: <span id="balance">0</span> 🐱
     </div>
-    
+
     <!-- Кнопка назад в меню -->
     <button id="backBtn">⬅ Меню</button>
   </div>
 
+  <!-- Подключаем app.js -->
   <script src="app.js"></script>
 </body>
 </html>
-
