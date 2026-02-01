@@ -1,4 +1,4 @@
-// Слот и баланс
+// Баланс и имя
 const balanceEl = document.getElementById("balance");
 const playerEl = document.getElementById("user");
 
@@ -6,9 +6,6 @@ const playerEl = document.getElementById("user");
 const playerName = window.SLOT_PLAYER_NAME;
 playerEl.innerText = `Игрок: ${playerName}`;
 balanceEl.innerText = window.SLOT_BALANCE;
-
-// Слот элементы
-const slotEls = document.querySelectorAll("#slot span");
 
 // Крутить слот
 document.getElementById("play").onclick = () => {
@@ -18,6 +15,9 @@ document.getElementById("play").onclick = () => {
   }
 
   window.SLOT_BALANCE -= 1;
+
+  // Выбираем элементы слота **каждый раз при клике**, чтобы точно были в DOM
+  const slotEls = document.querySelectorAll("#slot span");
 
   const symbols = ["🍒","🍒","🍒","🍋","🍋","🔔","⭐","7️⃣"];
   const result = [];
