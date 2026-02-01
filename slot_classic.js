@@ -1,24 +1,38 @@
-const slotContainer = document.getElementById("slot");
-slotContainer.innerHTML = "<span>❓</span><span>❓</span><span>❓</span>";
+const playerName = window.SLOT_PLAYER_NAME || "Игрок";
+let balance = window.SLOT_BALANCE || 100;
 
+const balanceEl = document.getElementById("balance");
+balanceEl.innerText = balance;
+
+const slotContainer = document.getElementById("slot");
+slotContainer.innerHTML = '<span>❓</span><span>❓</span><span>❓</span>';
 const slotEls = slotContainer.querySelectorAll("span");
-const symbols = ["🍒","🍋","🔔","⭐","7️⃣"];
 
 document.getElementById("play").onclick = () => {
-  let balance = window.SLOT_BALANCE || 100;
+  if (balance <= 0) {
+    alert("Нет фишек 😢");
+    return;
+  }
+
+  balance -= 1;
+
+  const symbols = ["🍒","🍋","🔔","⭐","7️⃣"];
+  const result = [];
 
   slotEls.forEach(el => {
     const sym = symbols[Math.floor(Math.random() * symbols.length)];
     el.innerText = sym;
+    result.push(sym);
   });
 
-  const result = Array.from(slotEls).map(el => el.innerText);
   if (result.every(s => s === result[0])) {
     balance += 10;
-    tg?.showPopup({ message: "🎉 Победа! +10 фишек" });
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.showPopup({ message: "🎉 Победа! +10 фишек" });
+    else alert("🎉 Победа! +10 фишек");
   }
 
-  window.SLOT_BALANCE = balance;
   localStorage.setItem("balance", balance);
-  document.getElementById("balance").innerText = balance;
+  balanceEl.innerText = balance;
+  window.SLOT_BALANCE = balance;
 };
