@@ -1,3 +1,4 @@
+/* --- Базовые стили --- */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -6,6 +7,7 @@ body {
   padding: 0;
 }
 
+/* --- Главное меню --- */
 .menu {
   display: flex;
   flex-direction: column;
@@ -22,18 +24,25 @@ body {
   cursor: pointer;
   background: #ffcc80;
   border: none;
-  transition: transform 0.1s;
+  transition: transform 0.1s, background 0.2s;
+}
+
+.menu button:hover {
+  background: #ffd699;
 }
 
 .menu button:active {
   transform: scale(0.95);
 }
 
+/* --- Баланс --- */
 #balanceDisplay {
   margin-top: 15px;
   font-size: 18px;
+  font-weight: bold;
 }
 
+/* --- Кнопка "Назад" --- */
 #backBtn {
   margin-top: 20px;
   padding: 10px 20px;
@@ -42,7 +51,18 @@ body {
   cursor: pointer;
   background: #ffe0b2;
   border: none;
+  transition: transform 0.1s, background 0.2s;
 }
+
+#backBtn:hover {
+  background: #ffd699;
+}
+
+#backBtn:active {
+  transform: scale(0.95);
+}
+
+/* --- Кнопка "Крутить" --- */
 #play {
   background-color: #ffcc00;
   border: none;
@@ -52,6 +72,7 @@ body {
   cursor: pointer;
   box-shadow: 0 5px #b38f00;
   transition: all 0.2s ease;
+  margin-top: 20px;
 }
 
 #play:hover {
@@ -61,4 +82,43 @@ body {
 #play:active {
   box-shadow: 0 2px #b38f00;
   transform: translateY(3px);
+}
+
+/* --- Слот --- */
+#slot {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 60px; /* размер символов */
+  margin: 30px 0;
+}
+
+/* --- Имя игрока --- */
+#user {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* --- Адаптив под мобильные экраны --- */
+@media (max-width: 480px) {
+  #slot {
+    font-size: 45px;
+    gap: 15px;
+  }
+
+  #play {
+    font-size: 20px;
+    padding: 12px 30px;
+  }
+
+  .menu button {
+    font-size: 18px;
+    padding: 12px 20px;
+  }
+
+  #backBtn {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
 }
