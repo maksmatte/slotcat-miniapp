@@ -1,40 +1,24 @@
-const playerName = window.SLOT_PLAYER_NAME || "Игрок";
-let balance = window.SLOT_BALANCE || 100;
-
-const balanceEl = document.getElementById("balance");
-balanceEl.innerText = balance;
-document.getElementById("user").innerText = `Игрок: ${playerName}`;
-
 const slotContainer = document.getElementById("slot");
-slotContainer.innerHTML = ''; // очищаем контейнер
+slotContainer.innerHTML = "<span>❓</span><span>❓</span><span>❓</span>";
 
+const slotEls = slotContainer.querySelectorAll("span");
 const symbols = ["🍒","🍋","🔔","⭐","7️⃣"];
-for (let i = 0; i < 3; i++) {
-  const span = document.createElement("span");
-  span.innerText = symbols[Math.floor(Math.random()*symbols.length)];
-  slotContainer.appendChild(span);
-}
 
 document.getElementById("play").onclick = () => {
-  if (balance <= 0) { alert("Нет фишек 😢"); return; }
-  balance -= 1;
+  let balance = window.SLOT_BALANCE || 100;
 
-  const spans = slotContainer.querySelectorAll("span");
-  const result = [];
-  spans.forEach(el => {
-    const sym = symbols[Math.floor(Math.random()*symbols.length)];
+  slotEls.forEach(el => {
+    const sym = symbols[Math.floor(Math.random() * symbols.length)];
     el.innerText = sym;
-    result.push(sym);
   });
 
-  if (result.every(s => s===result[0])) {
+  const result = Array.from(slotEls).map(el => el.innerText);
+  if (result.every(s => s === result[0])) {
     balance += 10;
-    const tg = window.Telegram?.WebApp;
-    if (tg) tg.showPopup({ message: "🎉 Победа! +10 фишек" });
-    else alert("🎉 Победа! +10 фишек");
+    tg?.showPopup({ message: "🎉 Победа! +10 фишек" });
   }
 
-  localStorage.setItem("balance", balance);
-  balanceEl.innerText = balance;
   window.SLOT_BALANCE = balance;
+  localStorage.setItem("balance", balance);
+  document.getElementById("balance").innerText = balance;
 };
