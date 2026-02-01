@@ -15,39 +15,70 @@ body {
   height: 100vh;
 }
 
-.menu button, #play, #backBtn {
+.menu button {
   padding: 15px 25px;
   font-size: 20px;
   border-radius: 12px;
   cursor: pointer;
+  background: #ffcc80;
   border: none;
   transition: transform 0.1s;
 }
 
-#play {
-  background-color: #ffcc00;
-  padding: 15px 40px;
-  font-size: 24px;
-  box-shadow: 0 5px #b38f00;
+.menu button:active {
+  transform: scale(0.95);
 }
 
-#play:hover { background-color: #ffd633; }
-#play:active { box-shadow: 0 2px #b38f00; transform: translateY(3px); }
+#balanceDisplay {
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+#backBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #ffe0b2;
+  border: none;
+}
+
+#play {
+  background-color: #ffcc00;
+  border: none;
+  padding: 15px 40px;
+  font-size: 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 5px #b38f00;
+  transition: all 0.2s ease;
+}
+
+#play:hover {
+  background-color: #ffd633;
+}
+
+#play:active {
+  box-shadow: 0 2px #b38f00;
+  transform: translateY(3px);
+}
 
 #slot {
   display: flex;
   justify-content: center;
-  gap: 10px;
   margin: 20px 0;
+  gap: 10px;
 }
 
 #slot span, #slot img {
   font-size: 50px;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  background: #fff8dc;
+  align-items: center;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px #b38f00;
 }
