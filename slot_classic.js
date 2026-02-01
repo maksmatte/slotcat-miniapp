@@ -3,18 +3,15 @@ let balance = window.SLOT_BALANCE || 100;
 
 const balanceEl = document.getElementById("balance");
 balanceEl.innerText = balance;
-
 document.getElementById("user").innerText = `Игрок: ${playerName}`;
 
 const slotContainer = document.getElementById("slot");
 slotContainer.innerHTML = ''; // очищаем контейнер
 
-const symbols = ["🍒","🍒","🍒","🍋","🍋","🔔","⭐","7️⃣"];
-
-// Создаем 3 символа сразу
+const symbols = ["🍒","🍋","🔔","⭐","7️⃣"];
 for (let i = 0; i < 3; i++) {
   const span = document.createElement("span");
-  span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+  span.innerText = symbols[Math.floor(Math.random()*symbols.length)];
   slotContainer.appendChild(span);
 }
 
@@ -24,15 +21,13 @@ document.getElementById("play").onclick = () => {
 
   const spans = slotContainer.querySelectorAll("span");
   const result = [];
-
   spans.forEach(el => {
-    const sym = symbols[Math.floor(Math.random() * symbols.length)];
+    const sym = symbols[Math.floor(Math.random()*symbols.length)];
     el.innerText = sym;
     result.push(sym);
   });
 
-  // Выигрыш если все одинаковые
-  if (result.every(s => s === result[0])) {
+  if (result.every(s => s===result[0])) {
     balance += 10;
     const tg = window.Telegram?.WebApp;
     if (tg) tg.showPopup({ message: "🎉 Победа! +10 фишек" });
