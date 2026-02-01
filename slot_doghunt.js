@@ -1,14 +1,6 @@
-const playerName = window.SLOT_PLAYER_NAME || "Игрок";
-let balance = window.SLOT_BALANCE || 100;
-
-const balanceEl = document.getElementById("balance");
-balanceEl.innerText = balance;
-document.getElementById("user").innerText = `Игрок: ${playerName}`;
-
 const slotContainer = document.getElementById("slot");
-slotContainer.innerHTML = ''; // очищаем контейнер
-
-const symbols = [
+slotContainer.innerHTML = ""; // очистка
+const images = [
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog1.PNG",
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog2.PNG",
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog3.PNG",
@@ -16,32 +8,30 @@ const symbols = [
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog5.PNG"
 ];
 
+// создаём 5 img
 for (let i = 0; i < 5; i++) {
   const img = document.createElement("img");
-  img.src = symbols[Math.floor(Math.random()*symbols.length)];
+  img.src = images[i % images.length];
   slotContainer.appendChild(img);
 }
 
-document.getElementById("play").onclick = () => {
-  if (balance <= 0) { alert("Нет фишек 😢"); return; }
-  balance -= 1;
+const slotEls = slotContainer.querySelectorAll("img");
 
-  const imgs = slotContainer.querySelectorAll("img");
-  const result = [];
-  imgs.forEach(el => {
-    const sym = symbols[Math.floor(Math.random()*symbols.length)];
-    el.src = sym;
-    result.push(sym);
+document.getElementById("play").onclick = () => {
+  let balance = window.SLOT_BALANCE || 100;
+
+  slotEls.forEach(el => {
+    const img = images[Math.floor(Math.random() * images.length)];
+    el.src = img;
   });
 
-  if (result.every(s=>s===result[0])) {
-    balance += 10;
-    const tg = window.Telegram?.WebApp;
-    if (tg) tg.showPopup({ message: "🎉 Победа! +10 фишек" });
-    else alert("🎉 Победа! +10 фишек");
+  const result = Array.from(slotEls).map(el => el.src);
+  if (result.every(s => s === result[0])) {
+    balance += 15;
+    tg?.showPopup({ message: "🐶 Dog Hunt! +15 фишек" });
   }
 
-  localStorage.setItem("balance", balance);
-  balanceEl.innerText = balance;
   window.SLOT_BALANCE = balance;
+  localStorage.setItem("balance", balance);
+  document.getElementById("balance").innerText = balance;
 };
