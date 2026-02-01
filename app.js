@@ -1,55 +1,55 @@
-// Глобальные данные игрока
+// ---------- Глобальные данные ----------
 const tg = window.Telegram?.WebApp;
 tg?.expand();
 
-window.PLAYER_NAME = tg?.initDataUnsafe?.user?.first_name || "Игрок Тест";
-window.PLAYER_BALANCE = Number(localStorage.getItem("balance")) || 100;
+const playerName = tg?.initDataUnsafe?.user?.first_name || "Игрок Тест";
+let balance = Number(localStorage.getItem("balance")) || 100;
 
+// ---------- Главное меню ----------
 const menu = document.getElementById("menu");
 const gameContainer = document.getElementById("gameContainer");
+const playBtn = document.getElementById("playBtn");
 const backBtn = document.getElementById("backBtn");
 
-// Профиль в меню
-const profile = document.createElement("div");
-profile.id = "menuProfile";
-profile.innerHTML = `<strong>Игрок:</strong> ${window.PLAYER_NAME} | <strong>Баланс:</strong> <span id="menuBalance">${window.PLAYER_BALANCE}</span> 🐱`;
-menu.insertBefore(profile, menu.firstChild);
+// Показываем профиль игрока
+const menuProfile = document.createElement("div");
+menuProfile.id = "menuProfile";
+menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
+menu.insertBefore(menuProfile, menu.firstChild);
 
 // Обновление баланса в меню
 function updateMenuBalance() {
-  document.getElementById("menuBalance").innerText = window.PLAYER_BALANCE;
+  document.getElementById("menuBalance").innerText = balance;
 }
 
-// Кнопка Назад
-backBtn.addEventListener("click", () => {
-  gameContainer.style.display = "none";
-  menu.style.display = "flex";
-  updateMenuBalance();
-
-  // Сброс слота
-  const slotContainer = document.getElementById("slot");
-  slotContainer.innerHTML = '<span>❓</span><span>❓</span><span>❓</span>';
-});
-
-// Функция для загрузки слота
-function loadSlot(slotFunction) {
+// ---------- Play ----------
+playBtn.addEventListener("click", () => {
   menu.style.display = "none";
   gameContainer.style.display = "block";
 
   // Передаем глобальные данные слоту
-  window.SLOT_PLAYER_NAME = window.PLAYER_NAME;
-  window.SLOT_BALANCE = window.PLAYER_BALANCE;
+  window.SLOT_PLAYER_NAME = playerName;
+  window.SLOT_BALANCE = balance;
 
-  slotFunction();
+  // Подключаем Dog Hunt слот
+  const oldScript = document.getElementById("slotScript");
+  if (oldScript) oldScript.remove();
+  const script = document.createElement("script");
+  script.src = "slot_doghunt.js"; // новый слот
+  script.id = "slotScript";
+  document.body.appendChild(script);
 
-  // Баланс в слоте
-  document.getElementById("balance").innerText = window.SLOT_BALANCE;
-}
+  // Обновляем баланс в слоте сразу
+  document.getElementById("balance").innerText = balance;
+});
 
-// Кнопки слотов
-document.getElementById("playClassic").addEventListener("click", () => loadSlot(initClassicSlot));
-document.getElementById("playBonus").addEventListener("click", () => loadSlot(initBonusSlot));
+// ---------- Назад ----------
+backBtn.addEventListener("click", () => {
+  gameContainer.style.display = "none";
+  menu.style.display = "flex";
 
-// Кнопки меню "Баланс" и "Скоро"
-document.getElementById("balanceBtn").addEventListener("click", () => alert(`Ваш баланс: ${window.PLAYER_BALANCE} 🐱`));
-document.getElementById("soonBtn").addEventListener("click", () => alert("Эта функция появится позже! ⏳"));
+  const oldScript = document.getElementById("slotScript");
+  if (oldScript) oldScript.remove();
+
+  updateMenuBalance();
+});
