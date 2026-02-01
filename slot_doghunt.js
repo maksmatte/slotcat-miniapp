@@ -7,12 +7,12 @@ const balanceEl = document.getElementById("balance");
 balanceEl.innerText = balance;
 
 // ---------------- Массив картинок собак ----------------
-const dogs = [
-  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog1.png",
-  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog2.png",
-  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog3.png",
-  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog4.png",
-  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog5.png" // джекпот
+const dogImgs = [
+  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog1.PNG",
+  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog2.PNG",
+  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog3.PNG",
+  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog4.PNG",
+  "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog5.PNG"
 ];
 
 // ---------------- Создаем слот 5 в ряд ----------------
@@ -71,3 +71,4 @@ document.getElementById("play").onclick = () => {
 
   }, 800); // время вращения 0.8 секунды
 };
+
