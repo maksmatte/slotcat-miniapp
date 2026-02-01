@@ -1,4 +1,4 @@
-/* --- Базовые стили --- */
+/* ---------- Общие стили ---------- */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -7,7 +7,7 @@ body {
   padding: 0;
 }
 
-/* --- Главное меню --- */
+/* ---------- Главное меню ---------- */
 .menu {
   display: flex;
   flex-direction: column;
@@ -17,6 +17,17 @@ body {
   height: 100vh;
 }
 
+/* Профиль игрока в меню */
+#menuProfile {
+  font-size: 18px;
+  margin-bottom: 20px;
+  background: #ffebcd;
+  padding: 10px 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px #d2a679;
+}
+
+/* Кнопки меню */
 .menu button {
   padding: 15px 25px;
   font-size: 20px;
@@ -24,45 +35,39 @@ body {
   cursor: pointer;
   background: #ffcc80;
   border: none;
-  transition: transform 0.1s, background 0.2s;
-}
-
-.menu button:hover {
-  background: #ffd699;
+  transition: transform 0.1s;
 }
 
 .menu button:active {
   transform: scale(0.95);
 }
 
-/* --- Баланс --- */
-#balanceDisplay {
-  margin-top: 15px;
-  font-size: 18px;
+/* ---------- Контейнер слота ---------- */
+#gameContainer {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+}
+
+/* Имя игрока в слоте */
+#user {
+  font-size: 20px;
   font-weight: bold;
+  margin-bottom: 20px;
 }
 
-/* --- Кнопка "Назад" --- */
-#backBtn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  background: #ffe0b2;
-  border: none;
-  transition: transform 0.1s, background 0.2s;
+/* Слот */
+#slot {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 50px;
+  margin-bottom: 20px;
 }
 
-#backBtn:hover {
-  background: #ffd699;
-}
-
-#backBtn:active {
-  transform: scale(0.95);
-}
-
-/* --- Кнопка "Крутить" --- */
+/* Кнопка крутить слот */
 #play {
   background-color: #ffcc00;
   border: none;
@@ -72,7 +77,6 @@ body {
   cursor: pointer;
   box-shadow: 0 5px #b38f00;
   transition: all 0.2s ease;
-  margin-top: 20px;
 }
 
 #play:hover {
@@ -84,41 +88,19 @@ body {
   transform: translateY(3px);
 }
 
-/* --- Слот --- */
-#slot {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  font-size: 60px; /* размер символов */
-  margin: 30px 0;
+/* Баланс в слоте */
+#balanceDisplay {
+  margin-top: 15px;
+  font-size: 18px;
 }
 
-/* --- Имя игрока --- */
-#user {
-  font-size: 22px;
-  font-weight: bold;
+/* Кнопка назад */
+#backBtn {
   margin-top: 20px;
-}
-
-/* --- Адаптив под мобильные экраны --- */
-@media (max-width: 480px) {
-  #slot {
-    font-size: 45px;
-    gap: 15px;
-  }
-
-  #play {
-    font-size: 20px;
-    padding: 12px 30px;
-  }
-
-  .menu button {
-    font-size: 18px;
-    padding: 12px 20px;
-  }
-
-  #backBtn {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #ffe0b2;
+  border: none;
 }
