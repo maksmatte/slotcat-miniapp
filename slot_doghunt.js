@@ -1,12 +1,15 @@
-// ---------------- Глобальные данные игрока ----------------
-const playerName = window.SLOT_PLAYER_NAME || "Игрок Тест";
+const playerName = window.SLOT_PLAYER_NAME || "Игрок";
 let balance = window.SLOT_BALANCE || 100;
 
-document.getElementById("user").innerText = `Игрок: ${playerName}`;
 const balanceEl = document.getElementById("balance");
 balanceEl.innerText = balance;
 
-// ---------------- Массив картинок собак ----------------
+document.getElementById("user").innerText = `Игрок: ${playerName}`;
+
+const slotContainer = document.getElementById("slot");
+slotContainer.innerHTML = ''; // очистим
+
+// Массив картинок собак (raw ссылки)
 const dogImgs = [
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog1.PNG",
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog2.PNG",
@@ -15,60 +18,36 @@ const dogImgs = [
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog5.PNG"
 ];
 
-// ---------------- Создаем слот 5 в ряд ----------------
-const slotContainer = document.getElementById("slot");
-slotContainer.innerHTML = "";
+// Создаем 5 слотов
 for (let i = 0; i < 5; i++) {
-  const img = document.createElement("img");
-  img.src = dogs[Math.floor(Math.random() * dogs.length)];
-  img.className = "slot-dog";
-  slotContainer.appendChild(img);
+  const span = document.createElement("span");
+  span.innerHTML = '<img src="' + dogImgs[Math.floor(Math.random() * dogImgs.length)] + '" width="80" height="80">';
+  slotContainer.appendChild(span);
 }
 
-// ---------------- Кнопка Крутить ----------------
+// Крутить
 document.getElementById("play").onclick = () => {
-  if (balance <= 0) {
-    alert("Нет фишек 😢");
-    return;
-  }
-
+  if (balance <= 0) { alert("Нет фишек 😢"); return; }
   balance -= 1;
 
-  const slotImgs = document.querySelectorAll(".slot-dog");
+  const spans = slotContainer.querySelectorAll("span");
   const result = [];
 
-  // Анимация вращения
-  slotImgs.forEach(img => {
-    img.classList.add("spin");
+  spans.forEach(el => {
+    const idx = Math.floor(Math.random() * dogImgs.length);
+    el.innerHTML = '<img src="' + dogImgs[idx] + '" width="80" height="80">';
+    result.push(idx);
   });
 
-  setTimeout(() => {
-    slotImgs.forEach(img => {
-      const dog = dogs[Math.floor(Math.random() * dogs.length)];
-      img.src = dog;
-      result.push(dog);
-      img.classList.remove("spin");
-    });
+  // Выигрыш если все совпало
+  if (result.every((v) => v === result[0])) {
+    balance += 20;
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.showPopup({ message: "🎉 Победа! +20 фишек" });
+    else alert("🎉 Победа! +20 фишек");
+  }
 
-    // ---------------- Проверка выигрыша ----------------
-    const jackpotDog = dogs[4]; // dog5.png
-    if (result.every(d => d === jackpotDog)) {
-      balance += 50; // супер-выигрыш
-      const tg = window.Telegram?.WebApp;
-      if (tg) tg.showPopup({ message: "🎉 JACKPOT! +50 фишек" });
-      else alert("🎉 JACKPOT! +50 фишек");
-    } else if (result.every(d => d === result[0])) {
-      balance += 20; // обычный выигрыш
-      const tg = window.Telegram?.WebApp;
-      if (tg) tg.showPopup({ message: "🎉 Победа! +20 фишек" });
-      else alert("🎉 Победа! +20 фишек");
-    }
-
-    // ---------------- Сохраняем баланс ----------------
-    localStorage.setItem("balance", balance);
-    balanceEl.innerText = balance;
-    window.SLOT_BALANCE = balance;
-
-  }, 800); // время вращения 0.8 секунды
+  localStorage.setItem("balance", balance);
+  balanceEl.innerText = balance;
+  window.SLOT_BALANCE = balance;
 };
-
