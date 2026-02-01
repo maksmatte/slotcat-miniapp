@@ -13,7 +13,7 @@ if (tg) {
 let balanceEl = document.getElementById("balance");
 
 // Слот
-const symbols = ["🍒", "🍋", "🔔", "⭐", "7️⃣"];
+const symbols = ["🍒","🍒","🍒","🍋","🍋","🔔","⭐","7️⃣"];
 const slotEls = document.querySelectorAll("#slot span");
 
 document.getElementById("play").onclick = () => {
@@ -43,4 +43,5 @@ document.getElementById("play").onclick = () => {
   localStorage.setItem("balance", balance);
   balanceEl.innerText = balance;
 };
+
 
