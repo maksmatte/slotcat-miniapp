@@ -1,51 +1,48 @@
-// --- Telegram ---
+// ---------- Глобальные данные игрока ----------
 const tg = window.Telegram?.WebApp;
 tg?.expand();
 
-// --- Профиль игрока ---
 const playerName = tg?.initDataUnsafe?.user?.first_name || "Игрок Тест";
 let balance = Number(localStorage.getItem("balance")) || 100;
 
-// --- Элементы DOM ---
+// ---------- Элементы DOM ----------
 const menu = document.getElementById("menu");
 const gameContainer = document.getElementById("gameContainer");
+const playBtn = document.getElementById("play");
+const backBtn = document.getElementById("backBtn");
+
 const playClassicBtn = document.getElementById("playClassic");
 const playDogHuntBtn = document.getElementById("playDogHunt");
 const balanceBtn = document.getElementById("balanceBtn");
 const soonBtn = document.getElementById("soonBtn");
-const backBtn = document.getElementById("backBtn");
-const balanceEl = document.getElementById("balance");
 
-// --- Показываем профиль в меню ---
-const menuProfile = document.createElement("div");
-menuProfile.id = "menuProfile";
-menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
-menu.insertBefore(menuProfile, menu.firstChild);
+document.getElementById("user").innerText = `Игрок: ${playerName}`;
+document.getElementById("balance").innerText = balance;
 
-function updateMenuBalance() {
-  document.getElementById("menuBalance").innerText = balance;
-}
-
-// --- Общая функция открытия слота ---
+// ---------- Функция открытия слота ----------
 function openSlot(slotScript) {
   menu.style.display = "none";
   gameContainer.style.display = "block";
 
+  // Передаем данные в слот
   window.SLOT_PLAYER_NAME = playerName;
   window.SLOT_BALANCE = balance;
 
+  // Удаляем старый скрипт
   const oldScript = document.getElementById("slotScript");
   if (oldScript) oldScript.remove();
 
+  // Создаем новый
   const script = document.createElement("script");
   script.src = slotScript;
   script.id = "slotScript";
+  script.onload = () => {
+    document.getElementById("balance").innerText = balance;
+  };
   document.body.appendChild(script);
-
-  balanceEl.innerText = balance;
 }
 
-// --- Кнопки ---
+// ---------- Привязка кнопок ----------
 playClassicBtn.onclick = () => openSlot("slot_classic.js");
 playDogHuntBtn.onclick = () => openSlot("slot_doghunt.js");
 
@@ -59,5 +56,6 @@ backBtn.onclick = () => {
   const oldScript = document.getElementById("slotScript");
   if (oldScript) oldScript.remove();
 
-  updateMenuBalance();
+  // Обновляем баланс
+  document.getElementById("balance").innerText = balance;
 };
