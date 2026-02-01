@@ -17,6 +17,9 @@ playBtn.addEventListener("click", () => {
   script.src = "slot_classic.js"; // твой слот
   script.id = "slotScript";
   document.body.appendChild(script);
+
+  // Обновляем баланс на экране
+  document.getElementById("balance").innerText = balance;
 });
 
 balanceBtn.addEventListener("click", () => {
@@ -36,3 +39,6 @@ backBtn.addEventListener("click", () => {
   if (oldScript) oldScript.remove();
 
   // Очищаем контейнер
+  const slotContainer = document.getElementById("slot");
+  slotContainer.innerHTML = '<span>❓</span><span>❓</span><span>❓</span>';
+});
