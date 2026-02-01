@@ -1,68 +1,63 @@
-// ---------- Глобальные данные игрока ----------
+// --- Telegram ---
 const tg = window.Telegram?.WebApp;
 tg?.expand();
 
+// --- Профиль игрока ---
 const playerName = tg?.initDataUnsafe?.user?.first_name || "Игрок Тест";
 let balance = Number(localStorage.getItem("balance")) || 100;
 
-// ---------- Элементы ----------
+// --- Элементы DOM ---
 const menu = document.getElementById("menu");
 const gameContainer = document.getElementById("gameContainer");
-const playBtnClassic = document.getElementById("playClassic");
-const playBtnDogHunt = document.getElementById("playDogHunt");
+const playClassicBtn = document.getElementById("playClassic");
+const playDogHuntBtn = document.getElementById("playDogHunt");
 const balanceBtn = document.getElementById("balanceBtn");
 const soonBtn = document.getElementById("soonBtn");
 const backBtn = document.getElementById("backBtn");
+const balanceEl = document.getElementById("balance");
 
-// ---------- Профиль в меню ----------
-const menuProfile = document.getElementById("menuProfile");
+// --- Показываем профиль в меню ---
+const menuProfile = document.createElement("div");
+menuProfile.id = "menuProfile";
 menuProfile.innerHTML = `<strong>Игрок:</strong> ${playerName} | <strong>Баланс:</strong> <span id="menuBalance">${balance}</span> 🐱`;
+menu.insertBefore(menuProfile, menu.firstChild);
 
-// Обновление баланса
 function updateMenuBalance() {
   document.getElementById("menuBalance").innerText = balance;
 }
 
-// ---------- Функция запуска слота ----------
-function startSlot(slotScriptName) {
+// --- Общая функция открытия слота ---
+function openSlot(slotScript) {
   menu.style.display = "none";
   gameContainer.style.display = "block";
 
-  // Передаем данные слоту
   window.SLOT_PLAYER_NAME = playerName;
   window.SLOT_BALANCE = balance;
 
-  // Удаляем старый слот если есть
   const oldScript = document.getElementById("slotScript");
   if (oldScript) oldScript.remove();
 
   const script = document.createElement("script");
-  script.src = slotScriptName;
+  script.src = slotScript;
   script.id = "slotScript";
   document.body.appendChild(script);
 
-  // Обновляем баланс сразу
-  document.getElementById("balance").innerText = balance;
+  balanceEl.innerText = balance;
 }
 
-// ---------- Слушатели кнопок ----------
-playBtnClassic.addEventListener("click", () => startSlot("slot_classic.js"));
-playBtnDogHunt.addEventListener("click", () => startSlot("slot_doghunt.js"));
+// --- Кнопки ---
+playClassicBtn.onclick = () => openSlot("slot_classic.js");
+playDogHuntBtn.onclick = () => openSlot("slot_doghunt.js");
 
-balanceBtn.addEventListener("click", () => alert(`Ваш баланс: ${balance} 🐱`));
-soonBtn.addEventListener("click", () => alert("Эта функция появится позже! ⏳"));
+balanceBtn.onclick = () => alert(`Ваш баланс: ${balance} 🐱`);
+soonBtn.onclick = () => alert("Эта функция появится позже! ⏳");
 
-backBtn.addEventListener("click", () => {
+backBtn.onclick = () => {
   gameContainer.style.display = "none";
   menu.style.display = "flex";
 
-  // Удаляем слот
   const oldScript = document.getElementById("slotScript");
   if (oldScript) oldScript.remove();
 
-  // Сброс слота на дефолт
-  const slotContainer = document.getElementById("slot");
-  slotContainer.innerHTML = '<span>❓</span><span>❓</span><span>❓</span>';
-
   updateMenuBalance();
-});
+};
