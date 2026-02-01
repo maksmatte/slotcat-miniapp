@@ -29,11 +29,6 @@ body {
   transform: scale(0.95);
 }
 
-#menuProfile {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
 #balanceDisplay {
   margin-top: 15px;
   font-size: 18px;
@@ -69,21 +64,13 @@ body {
   transform: translateY(3px);
 }
 
-/* Слот 5 в ряд */
-#slot {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px 0;
+#slot img {
+  width: 60px;
+  height: 60px;
+  margin: 0 5px;
 }
 
 #slot span {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
   font-size: 48px;
-  line-height: 80px;
-  background: #fff8dc;
-  border: 2px solid #ffc107;
-  border-radius: 12px;
+  margin: 0 10px;
 }
