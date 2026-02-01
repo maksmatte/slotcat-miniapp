@@ -1,19 +1,24 @@
-const tg = window.Telegram.WebApp;
-tg.expand();
+// Проверка Telegram API
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.expand();
+  const user = tg.initDataUnsafe.user;
+  document.getElementById("user").innerText =
+    user ? `Игрок: ${user.first_name}` : "Игрок";
+} else {
+  document.getElementById("user").innerText = "Игрок (не Telegram)";
+}
 
-// пользователь
-const user = tg.initDataUnsafe.user;
-document.getElementById("user").innerText =
-  user ? `Игрок: ${user.first_name}` : "Игрок";
+// Баланс
+let balanceEl = document.getElementById("balance");
 
-// баланс
-const balanceEl = document.getElementById("balance");
-
-// слот
+// Слот
 const symbols = ["🍒", "🍋", "🔔", "⭐", "7️⃣"];
 const slotEls = document.querySelectorAll("#slot span");
 
 document.getElementById("play").onclick = () => {
+  let balance = Number(localStorage.getItem("balance")) || 100;
+
   if (balance <= 0) {
     alert("Нет фишек 😢");
     return;
@@ -28,10 +33,11 @@ document.getElementById("play").onclick = () => {
     result.push(sym);
   });
 
-  // выигрыш
+  // Выигрыш
   if (result.every((s) => s === result[0])) {
     balance += 10;
-    tg.showPopup({ message: "🎉 Победа! +10 фишек" });
+    if (tg) tg.showPopup({ message: "🎉 Победа! +10 фишек" });
+    else alert("🎉 Победа! +10 фишек");
   }
 
   localStorage.setItem("balance", balance);
