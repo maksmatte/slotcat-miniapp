@@ -43,3 +43,22 @@ body {
   background: #ffe0b2;
   border: none;
 }
+#play {
+  background-color: #ffcc00;
+  border: none;
+  padding: 15px 40px;
+  font-size: 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 5px #b38f00;
+  transition: all 0.2s ease;
+}
+
+#play:hover {
+  background-color: #ffd633;
+}
+
+#play:active {
+  box-shadow: 0 2px #b38f00;
+  transform: translateY(3px);
+}
