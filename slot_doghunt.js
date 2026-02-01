@@ -3,14 +3,12 @@ let balance = window.SLOT_BALANCE || 100;
 
 const balanceEl = document.getElementById("balance");
 balanceEl.innerText = balance;
-
 document.getElementById("user").innerText = `Игрок: ${playerName}`;
 
 const slotContainer = document.getElementById("slot");
-slotContainer.innerHTML = ''; // очистим
+slotContainer.innerHTML = ''; // очищаем контейнер
 
-// Массив картинок собак (raw ссылки)
-const dogImgs = [
+const symbols = [
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog1.PNG",
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog2.PNG",
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog3.PNG",
@@ -18,33 +16,29 @@ const dogImgs = [
   "https://raw.githubusercontent.com/maksmatte/slotcat-miniapp/main/img/dog5.PNG"
 ];
 
-// Создаем 5 слотов
 for (let i = 0; i < 5; i++) {
-  const span = document.createElement("span");
-  span.innerHTML = '<img src="' + dogImgs[Math.floor(Math.random() * dogImgs.length)] + '" width="80" height="80">';
-  slotContainer.appendChild(span);
+  const img = document.createElement("img");
+  img.src = symbols[Math.floor(Math.random()*symbols.length)];
+  slotContainer.appendChild(img);
 }
 
-// Крутить
 document.getElementById("play").onclick = () => {
   if (balance <= 0) { alert("Нет фишек 😢"); return; }
   balance -= 1;
 
-  const spans = slotContainer.querySelectorAll("span");
+  const imgs = slotContainer.querySelectorAll("img");
   const result = [];
-
-  spans.forEach(el => {
-    const idx = Math.floor(Math.random() * dogImgs.length);
-    el.innerHTML = '<img src="' + dogImgs[idx] + '" width="80" height="80">';
-    result.push(idx);
+  imgs.forEach(el => {
+    const sym = symbols[Math.floor(Math.random()*symbols.length)];
+    el.src = sym;
+    result.push(sym);
   });
 
-  // Выигрыш если все совпало
-  if (result.every((v) => v === result[0])) {
-    balance += 20;
+  if (result.every(s=>s===result[0])) {
+    balance += 10;
     const tg = window.Telegram?.WebApp;
-    if (tg) tg.showPopup({ message: "🎉 Победа! +20 фишек" });
-    else alert("🎉 Победа! +20 фишек");
+    if (tg) tg.showPopup({ message: "🎉 Победа! +10 фишек" });
+    else alert("🎉 Победа! +10 фишек");
   }
 
   localStorage.setItem("balance", balance);
