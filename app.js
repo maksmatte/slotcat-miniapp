@@ -1,47 +1,49 @@
-﻿const tg = window.Telegram.WebApp;
-tg.expand();
+// ======== Переменные ========
+let userBalance = 1000; // пример стартового баланса
 
-// пользователь
-const user = tg.initDataUnsafe.user;
-document.getElementById("user").innerText =
-    user ? `Игрок: ${user.first_name}` : "Игрок";
+// ======== Элементы ========
+const menu = document.getElementById('menu');
+const gameContainer = document.getElementById('gameContainer');
+const playBtn = document.getElementById('playBtn');
+const balanceBtn = document.getElementById('balanceBtn');
+const soonBtn = document.getElementById('soonBtn');
+const backBtn = document.getElementById('backBtn');
+const balanceValue = document.getElementById('balanceValue');
 
-// баланс
-let balance = localStorage.getItem("balance");
-if (!balance) {
-    balance = 100;
-    localStorage.setItem("balance", balance);
+// ======== Кнопки меню ========
+playBtn.addEventListener('click', () => {
+  menu.style.display = 'none';
+  gameContainer.style.display = 'block';
+  updateBalanceDisplay();
+});
+
+balanceBtn.addEventListener('click', () => {
+  alert(`Ваш баланс: ${userBalance} 🐱`);
+});
+
+soonBtn.addEventListener('click', () => {
+  alert('Эта функция появится позже! ⏳');
+});
+
+// ======== Кнопка "Назад" ========
+backBtn.addEventListener('click', () => {
+  gameContainer.style.display = 'none';
+  menu.style.display = 'flex';
+});
+
+// ======== Обновление баланса ========
+function updateBalanceDisplay() {
+  balanceValue.textContent = userBalance;
 }
-balance = Number(balance);
 
-const balanceEl = document.getElementById("balance");
-balanceEl.innerText = balance;
-
-// слот
-const symbols = ["🍒", "🍋", "🔔", "⭐", "7️⃣"];
-const slotEls = document.querySelectorAll("#slot span");
-
-document.getElementById("play").onclick = () => {
-    if (balance <= 0) {
-        alert("Нет фишек 😢");
-        return;
-    }
-
-    balance -= 1;
-
-    const result = [];
-    slotEls.forEach(el => {
-        const sym = symbols[Math.floor(Math.random() * symbols.length)];
-        el.innerText = sym;
-        result.push(sym);
-    });
-
-    // выигрыш
-    if (result.every(s => s === result[0])) {
-        balance += 10;
-        tg.showPopup({ message: "🎉 Победа! +10 фишек" });
-    }
-
-    localStorage.setItem("balance", balance);
-    balanceEl.innerText = balance;
-};
+// ======== Здесь вставляется твоя текущая логика слота ========
+// Пример:
+const slotBtn = document.createElement('button');
+slotBtn.textContent = 'Крутить 🎰';
+slotBtn.addEventListener('click', () => {
+  const win = Math.floor(Math.random() * 100);
+  userBalance += win;
+  updateBalanceDisplay();
+  alert(`Вы выиграли ${win} 🐱`);
+});
+document.getElementById('slot').appendChild(slotBtn);
