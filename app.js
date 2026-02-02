@@ -1,61 +1,78 @@
-// ---------- Глобальные данные игрока ----------
+// Ініціалізація Telegram
 const tg = window.Telegram?.WebApp;
 tg?.expand();
 
-const playerName = tg?.initDataUnsafe?.user?.first_name || "Игрок Тест";
-let balance = Number(localStorage.getItem("balance")) || 100;
+// Дані користувача
+const user = tg?.initDataUnsafe?.user;
+const playerName = user?.first_name || "Гравець";
+const userId = user?.id || "local_test";
 
-// ---------- Элементы DOM ----------
+// Баланс (завантажуємо або ставимо 1000)
+let balance = Number(localStorage.getItem(`balance_${userId}`)) || 1000;
+let currentGameInstance = null; // Тут зберігаємо активну гру
+
+// Елементи
 const menu = document.getElementById("menu");
-const gameContainer = document.getElementById("gameContainer");
-const playBtn = document.getElementById("play");
-const backBtn = document.getElementById("backBtn");
+const gameScreen = document.getElementById("gameScreen");
+const gameContainer = document.getElementById("activeSlotContainer");
+const uiBalance = document.getElementById("balance");
+const uiUser = document.getElementById("user");
 
-const playClassicBtn = document.getElementById("playClassic");
-const playDogHuntBtn = document.getElementById("playDogHunt");
-const balanceBtn = document.getElementById("balanceBtn");
-const soonBtn = document.getElementById("soonBtn");
+// Початкове відображення
+uiUser.innerText = playerName;
+uiBalance.innerText = balance;
 
-document.getElementById("user").innerText = `Игрок: ${playerName}`;
-document.getElementById("balance").innerText = balance;
-
-// ---------- Функция открытия слота ----------
-function openSlot(slotScript) {
-  menu.style.display = "none";
-  gameContainer.style.display = "block";
-
-  // Передаем данные в слот
-  window.SLOT_PLAYER_NAME = playerName;
-  window.SLOT_BALANCE = balance;
-
-  // Удаляем старый скрипт
-  const oldScript = document.getElementById("slotScript");
-  if (oldScript) oldScript.remove();
-
-  // Создаем новый
-  const script = document.createElement("script");
-  script.src = slotScript;
-  script.id = "slotScript";
-  script.onload = () => {
-    document.getElementById("balance").innerText = balance;
-  };
-  document.body.appendChild(script);
+// --- Функція зміни балансу (передається в ігри) ---
+function updateBalance(amount) {
+    balance += amount;
+    uiBalance.innerText = balance;
+    localStorage.setItem(`balance_${userId}`, balance);
 }
 
-// ---------- Привязка кнопок ----------
-playClassicBtn.onclick = () => openSlot("slot_classic.js");
-playDogHuntBtn.onclick = () => openSlot("slot_doghunt.js");
+// --- Функція запуску гри ---
+function launchGame(gameStarter) {
+    // 1. Інтерфейс
+    menu.style.display = "none";
+    gameScreen.style.display = "flex";
+    
+    // 2. Очистка попередньої гри
+    if (currentGameInstance && currentGameInstance.destroy) {
+        currentGameInstance.destroy();
+    }
+    gameContainer.innerHTML = ""; // Чистимо HTML
 
-balanceBtn.onclick = () => alert(`Ваш баланс: ${balance} 🐱`);
-soonBtn.onclick = () => alert("Эта функция появится позже! ⏳");
+    // 3. Запуск нової
+    if (typeof gameStarter === 'function') {
+        // Передаємо контейнер, баланс і функцію оновлення балансу
+        currentGameInstance = gameStarter(gameContainer, balance, updateBalance);
+    }
+}
 
-backBtn.onclick = () => {
-  gameContainer.style.display = "none";
-  menu.style.display = "flex";
+// --- Кнопка "Назад" ---
+document.getElementById("backBtn").onclick = () => {
+    // Зупиняємо гру
+    if (currentGameInstance && currentGameInstance.destroy) {
+        currentGameInstance.destroy();
+    }
+    currentGameInstance = null;
+    gameContainer.innerHTML = "";
 
-  const oldScript = document.getElementById("slotScript");
-  if (oldScript) oldScript.remove();
-
-  // Обновляем баланс
-  document.getElementById("balance").innerText = balance;
+    // Показуємо меню
+    gameScreen.style.display = "none";
+    menu.style.display = "flex";
 };
+
+// --- Прив'язка кнопок меню ---
+// Перевіряємо, чи завантажились файли ігор
+document.getElementById("playClassic").onclick = () => {
+    if (window.StartClassicSlot) launchGame(window.StartClassicSlot);
+    else alert("Помилка: Файл slot_classic.js не знайдено!");
+};
+
+document.getElementById("playDogHunt").onclick = () => {
+    if (window.StartDogSlot) launchGame(window.StartDogSlot);
+    else alert("Помилка: Файл slot_doghunt.js не знайдено!");
+};
+
+document.getElementById("balanceBtn").onclick = () => tg.showAlert(`Твій баланс: ${balance}`);
+document.getElementById("soonBtn").onclick = () => tg.showAlert("Скоро буде!");
