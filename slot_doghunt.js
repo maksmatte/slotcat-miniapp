@@ -71,7 +71,7 @@ window.StartDogSlot = function(container, currentBalance, updateBalanceCallback)
             updateBalanceCallback(500);
             window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
         } else {
-            msg.innerText = "Собаки втекли...";
+            msg.innerText = "АХХААЫАХЫХА ТЫ ПРОЕБАЛ ДАУН!!";
             msg.style.color = "#ccc";
         }
     }
