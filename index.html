@@ -1,41 +1,45 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SlotCat Mini App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Главное меню -->
   <div class="menu" id="menu">
     <h1>🐱 SlotCat</h1>
-    <button id="playClassic">🎮 Classic Slot</button>
-    <button id="playDogHunt">🐶 Dog Hunt Slot</button>
-    <button id="balanceBtn">💰 Balance</button>
-    <button id="soonBtn">⏳ Soon</button>
+    <button id="playClassic">🎰 Класичний Слот</button>
+    <button id="playDogHunt">🐶 Полювання на Собак</button>
+    
+    <div style="margin-top: 20px; width: 100%; max-width: 300px; display: flex; gap: 10px;">
+        <button id="balanceBtn" style="flex: 1;">💰 Баланс</button>
+        <button id="soonBtn" style="flex: 1;">⏳ Скоро</button>
+    </div>
   </div>
 
-  <!-- Контейнер слота -->
-  <div id="gameContainer" style="display:none;">
-    <div id="user">Игрок</div>
-
-    <!-- Слот -->
-    <div id="slot"></div>
-
-    <!-- Кнопка крутить -->
-    <button id="play">Крутить 🎰</button>
-
-    <!-- Баланс внизу -->
-    <div id="balanceDisplay">
-      Баланс: <span id="balance">0</span> 🐱
+  <div id="gameScreen" style="display:none;">
+    
+    <div id="gameHeader">
+        <button id="backBtn">⬅ Меню</button>
+        <div style="text-align: right;">
+            <div id="user" style="font-size: 12px; color: #94a3b8;">Гість</div>
+            <div style="font-weight: bold; color: #fbbf24;">💰 <span id="balance">0</span></div>
+        </div>
     </div>
 
-    <!-- Кнопка назад -->
-    <button id="backBtn">⬅ Меню</button>
+    <div id="activeSlotContainer">
+        </div>
+
   </div>
 
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <script src="slot_classic.js"></script>
+  <script src="slot_doghunt.js"></script>
+
   <script src="app.js"></script>
+
 </body>
 </html>
