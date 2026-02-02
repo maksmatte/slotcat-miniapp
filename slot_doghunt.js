@@ -1,51 +1,86 @@
-const playerName = window.SLOT_PLAYER_NAME || "Игрок";
-let balance = window.SLOT_BALANCE || 100;
+window.StartDogSlot = function(container, currentBalance, updateBalanceCallback) {
+    // ВАЖЛИВО: Перевір назви файлів у папці img!
+    // GitHub Pages чутливий до регістру (dog1.png і dog1.PNG - це різні файли)
+    const dogs = [
+        "img/dog1.PNG", 
+        "img/dog2.PNG", 
+        "img/dog3.PNG", 
+        "img/dog4.PNG", 
+        "img/dog5.PNG"
+    ];
 
-const balanceEl = document.getElementById("balance");
-balanceEl.innerText = balance;
+    // 1. Верстка
+    container.innerHTML = `
+        <div style="text-align: center;">
+            <h3 style="margin-top:0;">🐶 Dog Hunt</h3>
+            <div class="dogs-container">
+                <img class="dog-img" src="${dogs[0]}">
+                <img class="dog-img" src="${dogs[1]}">
+                <img class="dog-img" src="${dogs[2]}">
+                <img class="dog-img" src="${dogs[3]}">
+                <img class="dog-img" src="${dogs[4]}">
+            </div>
+            <div id="dMsg" style="height: 20px; color: #ccc; margin-bottom: 10px;">Збери 5 однакових!</div>
+            <button id="huntBtn" class="action-btn" style="background:#854d0e;">Полювати (-20)</button>
+        </div>
+    `;
 
-const slotContainer = document.getElementById("slot");
-slotContainer.innerHTML = `
-  <img src="img/dog1.PNG" alt="">
-  <img src="img/dog2.PNG" alt="">
-  <img src="img/dog3.PNG" alt="">
-  <img src="img/dog4.PNG" alt="">
-  <img src="img/dog5.PNG" alt="">
-`;
-const slotEls = slotContainer.querySelectorAll("img");
+    // 2. Змінні
+    const btn = container.querySelector("#huntBtn");
+    const msg = container.querySelector("#dMsg");
+    const imgs = container.querySelectorAll(".dog-img");
+    let isSpinning = false;
 
-document.getElementById("play").onclick = () => {
-  if (balance <= 0) {
-    alert("Нет фишек 😢");
-    return;
-  }
+    // 3. Логіка
+    function spin() {
+        if (isSpinning) return;
 
-  balance -= 1;
+        const currentMoney = parseInt(document.getElementById("balance").innerText);
+        if (currentMoney < 20) {
+            msg.innerText = "Мало корму!";
+            return;
+        }
 
-  const dogImgs = [
-    "img/dog1.PNG",
-    "img/dog2.PNG",
-    "img/dog3.PNG",
-    "img/dog4.PNG",
-    "img/dog5.PNG"
-  ];
+        isSpinning = true;
+        updateBalanceCallback(-20);
+        window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
 
-  const result = [];
+        let count = 0;
+        const interval = setInterval(() => {
+            imgs.forEach(img => {
+                img.src = dogs[Math.floor(Math.random() * dogs.length)];
+            });
+            count++;
+            if (count > 12) {
+                clearInterval(interval);
+                checkWin();
+            }
+        }, 80);
+    }
 
-  slotEls.forEach(el => {
-    const img = dogImgs[Math.floor(Math.random() * dogImgs.length)];
-    el.src = img;
-    result.push(img);
-  });
+    function checkWin() {
+        isSpinning = false;
+        const results = Array.from(imgs).map(img => img.getAttribute('src')); // Беремо поточні src
+        
+        // Перевірка: чи всі 5 однакові?
+        const allSame = results.every(src => src === results[0]);
 
-  if (result.every(s => s === result[0])) {
-    balance += 20;
-    const tg = window.Telegram?.WebApp;
-    if (tg) tg.showPopup({ message: "🎉 Победа! +20 фишек" });
-    else alert("🎉 Победа! +20 фишек");
-  }
+        if (allSame) {
+            msg.innerText = "СУПЕР ЗГРАЯ! +500";
+            msg.style.color = "gold";
+            updateBalanceCallback(500);
+            window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+        } else {
+            msg.innerText = "Собаки втекли...";
+            msg.style.color = "#ccc";
+        }
+    }
 
-  localStorage.setItem("balance", balance);
-  balanceEl.innerText = balance;
-  window.SLOT_BALANCE = balance;
+    btn.addEventListener("click", spin);
+
+    return {
+        destroy: () => {
+            btn.removeEventListener("click", spin);
+        }
+    };
 };
